@@ -4,6 +4,7 @@ from flask import Flask, request
 from flask_restful import Resource, Api, reqparse
 from flask_jwt import JWT, jwt_required
 from security import authenticate, identity
+from user import UserCreate
 
 app = Flask(__name__)
 app.secret_key = 'philly_beans'
@@ -47,7 +48,7 @@ class Item(Resource):
             return({'message': '{} does not exist.'.format(name)})
 
     def put(self, name):
-        data = parser.parse_args()
+        data = Item.parser.parse_args()
         item = next(filter(lambda x: x['name'] == name, items), None)
         if item is None:
             age = data['age']
@@ -66,5 +67,6 @@ class ItemList(Resource):
 
 api.add_resource(Item, '/item/<string:name>')
 api.add_resource(ItemList, '/items')
+api.add_resource(UserCreate, '/create')
 
 app.run(port=5000)
